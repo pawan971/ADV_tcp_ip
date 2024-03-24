@@ -1,0 +1,13 @@
+replicaCount: 1
+namespace: chatapp
+
+image:
+  repository: pawan971/chatapp
+  tag: chat_sv1
+
+targetCPUUtilizationPercentage: 50
+
+service:
+  type: NodePort
+  port: 8088
+  targetPort: 8080
