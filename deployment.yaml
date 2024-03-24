@@ -1,22 +1,62 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chat-server-dp
-  namespace: default
+  name: {{ .Release.Name }}-server
   labels:
-    app: chat-server
+    app: {{ .Chart.Name }}-server
 spec:
   selector:
     matchLabels:
-      app: chat-server
-      type: back-end
-  replicas: 1
+      app: {{ .Chart.Name }}-server
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: chat-server
-        type: back-end
+        app: {{ .Chart.Name }}-server
     spec:
       containers:
-      - image:  pawan971/chatapp:v1.4
-        name: chat-server
+        - name: {{ .Chart.Name }}-server
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["/bin/sh", "-c", "java ChatServer 8088"]
+          ports:
+            - containerPort: 8088
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          env:
+            - name: CPU_THRESHOLD_PERCENTAGE
+              value: "70"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-client
+  labels:
+    app: {{ .Chart.Name }}-client
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-client
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-client
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-client
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["/bin/sh", "-c", "java ChatClient {{ .Release.Name }}-server.{{ .Values.namespace }}.svc.cluster.local 8088"]
+          ports:
+            - containerPort: 8088
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

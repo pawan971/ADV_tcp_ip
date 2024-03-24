@@ -1,16 +1,25 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: chat-server-service
-  namespace: default
+  name: {{ .Release.Name }}-server
 spec:
   selector:
-    app: chat-server
-    type: back-end
-  type: NodePort
-  sessionAffinity: None
+    app: {{ .Chart.Name }}-server
   ports:
-  - name: chat-server
-    protocol: TCP
-    port: 8088
-    targetPort: 8088
+    - protocol: TCP
+      port: 8088
+      targetPort: 8088
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-client
+spec:
+  selector:
+    app: {{ .Chart.Name }}-client
+  ports:
+    - protocol: TCP
+      port: 8088
+      targetPort: 8088
+  type: NodePort
