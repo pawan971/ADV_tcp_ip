@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-server-service
+  namespace: default
+spec:
+  selector:
+    app: chat-server
+    type: back-end
+  type: NodePort
+  sessionAffinity: None
+  ports:
+  - name: chat-server
+    protocol: TCP
+    port: 8088
+    targetPort: 8088

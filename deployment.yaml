@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-server-dp
+  namespace: default
+  labels:
+    app: chat-server
+spec:
+  selector:
+    matchLabels:
+      app: chat-server
+      type: back-end
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: chat-server
+        type: back-end
+    spec:
+      containers:
+      - image:  pawan971/chatapp:v1.4
+        name: chat-server

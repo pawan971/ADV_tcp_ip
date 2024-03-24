@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: chat-server-pod
+  namespace: default
+  labels:
+    app: chat-server
+    type: back-end
+spec:
+  containers:
+  - name: chat-server
+    image: pawan971/chatapp:v1.4
